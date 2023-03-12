@@ -59,9 +59,7 @@ extern "C" {
 #include <stdlib.h>
 #include <dirent.h>
 #include <unistd.h>
-#include <assert.h>
 }
-#include <iostream>
 #include <vector>
 #include <string>
 
@@ -122,14 +120,14 @@ ALWAYS_INLINE CONST static int iter_rev(const int i)
 	return 1;
 }
 
-[[nodiscard]] ALWAYS_INLINE CONST const char *dict_is_word(const std::vector<std::string> &d, const char* word)
+[[nodiscard]] ALWAYS_INLINE CONST const char *dict_is_word(const std::vector<std::string> *d, const char* word)
 {
-	return (strstr(d[iter(*word)].c_str(), word));
+	return (strstr((*d)[iter(*word)].c_str(), word));
 }
 
-[[nodiscard]] ALWAYS_INLINE CONST const char *dict_is_word_nocase(const std::vector<std::string> &d, const char* word)
+[[nodiscard]] ALWAYS_INLINE CONST const char *dict_is_word_nocase(const std::vector<std::string> *d, const char* word)
 {
-	return strstr(d[iter(*word)].c_str(), word) ?: strstr(d[iter_rev(*word)].c_str(), word);
+	return strstr((*d)[iter(*word)].c_str(), word) ?: strstr((*d)[iter_rev(*word)].c_str(), word);
 }
 
 int main(int argc, char **argv)
@@ -139,7 +137,7 @@ int main(int argc, char **argv)
 		perror("alloc failed");
 		return -1;
 	}
-	const char *ret = dict_is_word_nocase(d, WORD);
+	const char *ret = dict_is_word_nocase(&d, WORD);
 	for (;;) {
 		switch (*ret) {
 		default:
