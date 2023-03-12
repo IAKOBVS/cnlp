@@ -140,9 +140,15 @@ int main(int argc, char **argv)
 		return -1;
 	}
 	const char *ret = dict_is_word_nocase(d, WORD);
-	if (!ret)
-		return -1;
-	while (*ret != '\n')
-		putchar(*ret++);
+	for (;;) {
+		switch (*ret) {
+		default:
+			putchar(*ret++);
+			continue;
+		case '\0':
+		case '\n':;
+		}
+		break;
+	}
 	return 0;
 }
