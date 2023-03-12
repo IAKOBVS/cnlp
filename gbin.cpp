@@ -139,10 +139,10 @@ int main(int argc, char **argv)
 		perror("alloc failed");
 		return -1;
 	}
-
-	if (dict_is_word_nocase(d, WORD)) {
-		printf("matches!");
-		return 1;
-	}
+	const char *ret = dict_is_word_nocase(d, WORD);
+	if (!ret)
+		return -1;
+	while (*ret != '\n')
+		putchar(*ret++);
 	return 0;
 }
