@@ -74,8 +74,7 @@ ALWAYS_INLINE CONST static int iter_rev(const int i)
 
 [[nodiscard]] ALWAYS_INLINE CONST const char *dict_is_word_nocase(const std::vector<std::string> &d, const char* word)
 {
-	const char *ret = strstr(d[iter(*word)].c_str(), word);
-	return ret ? ret : strstr(d[iter_rev(*word)].c_str(), word);
+	return strstr(d[iter(*word)].c_str(), word) ?: strstr(d[iter_rev(*word)].c_str(), word);
 }
 
 int main(int argc, char **argv)

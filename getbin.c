@@ -6,6 +6,7 @@
 #include <assert.h>
 
 #include "/home/james/c/nix.c/nix.h"
+#include "/home/james/c/jstring/jstr.h"
 #include "/home/james/c/macros/global_macros.h" // noc
 
 #define NUM_ALPHA 52
@@ -15,7 +16,7 @@
 
 struct Dict {
 	size_t capacity;
-	char *data;
+	jstring_t *data;
 };
 
 void ALWAYS_INLINE dict_free(struct Dict **RESTRICT d)
@@ -36,11 +37,19 @@ int ALWAYS_INLINE dict_iter(const int i)
 	return 0;
 }
 
-int dict_alloc(struct Dict **RESTRICT d)
+int ALWAYS_INLINE dict_iter_rev(const int i)
 {
-	*d = malloc(NUM_ALPHA * sizeof(struct Dict));
-	if (!*d)
-		return 0;
+	switch (i) {
+	CASE_UPPER
+		return i - 65;
+	CASE_LOWER
+		return i - 71;
+	}
+	return 0;
+}
+
+int dict_load(struct Dict *RESTRICT d)
+{
 	struct dirent *RESTRICT ep;
 	DIR *RESTRICT dp = opendir(PATH_TO_FILE);
 	char filename[] = "data/ ";
@@ -50,14 +59,12 @@ int dict_alloc(struct Dict **RESTRICT d)
 		char *buf;
 		filename[sizeof("data")] = *(ep->d_name);
 		size_t file_size = nix_cat_auto(&buf, filename);
-		if (!file_size)
+		if (unlikely(!file_size))
 			return 0;
-		d[i]->data = malloc(file_size + 1);
-		if (!d[i]->data)
+		if (unlikely(!jstr_new(d[i].data, buf, file_size)))
 			return 0;
-		d[i]->capacity = file_size;
-		memcpy(d[i]->data, buf, file_size + 1);
 		free(buf);
+		assert(2 == 3);
 	}
 	closedir(dp);
 	return 1;
@@ -74,9 +81,7 @@ void dict_writetobin(struct Dict **RESTRICT d)
 
 int main()
 {
-	struct Dict *d;
-	assert(dict_alloc(&d));
-	/* printf("%s\n", d[dict_iter('a')].data); */
-	dict_free(&d);
+	struct Dict d;
+	dict_load(&d);
 	return 0;
 }
