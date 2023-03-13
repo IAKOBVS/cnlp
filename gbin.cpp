@@ -102,6 +102,7 @@ int main(int argc, char **argv)
 		puts("Usage: ./gbin word");
 		return -1;
 	}
+
 	std::vector<std::string> d;
 	if (unlikely(!dict_load(&d))) {
 		perror("alloc failed");
@@ -109,5 +110,11 @@ int main(int argc, char **argv)
 	}
 	const char *ret = dict_is_word_nocase(&d, WORD);
 	match_word_print(ret);
+
+	/* char *buf; */
+	/* nix_cat_auto(&buf, "./allwords"); */
+	/* match_word_print(strstr(buf, argv[1])); */
+	/* free(buf); */
+
 	return 0;
 }

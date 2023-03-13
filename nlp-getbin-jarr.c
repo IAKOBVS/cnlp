@@ -79,11 +79,6 @@ void dict_writetobin(struct Dict *RESTRICT d)
 
 int main()
 {
-	/* struct Dict *d; */
-	/* dict_load(&d); */
-	/* printf("%s\n", d[dict_iter('a')].data->data); */
-	/* dict_free(&d); */
-
 	jstring_t j;
 	jstr_new(&j, "hello", 100);
 	puts(j.data);
