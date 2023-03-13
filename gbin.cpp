@@ -1,10 +1,17 @@
+#ifdef __cplusplus
 extern "C" {
+#endif
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <dirent.h>
 #include <unistd.h>
+
+#ifdef __cplusplus
 }
+#endif
+
 #include <vector>
 #include <string>
 
@@ -75,23 +82,32 @@ ALWAYS_INLINE CONST static int iter_rev(const int i)
 	return strstr((*d)[iter(*word)].c_str(), word) ?: strstr((*d)[iter_rev(*word)].c_str(), word);
 }
 
-int main(int argc, char **argv)
+ALWAYS_INLINE void match_word_print(const char *word)
 {
-	std::vector<std::string> d;
-	if (unlikely(!dict_load(&d))) {
-		perror("alloc failed");
-		return -1;
-	}
-	const char *ret = dict_is_word_nocase(&d, WORD);
 	for (;;) {
-		switch (*ret) {
+		switch (*word) {
 		default:
-			putchar(*ret++);
+			putchar(*word++);
 			continue;
 		case '\0':
 		case '\n':;
 		}
 		break;
 	}
+}
+
+int main(int argc, char **argv)
+{
+	if (unlikely(argc == 1)) {
+		puts("Usage: ./gbin word");
+		return -1;
+	}
+	std::vector<std::string> d;
+	if (unlikely(!dict_load(&d))) {
+		perror("alloc failed");
+		return -1;
+	}
+	const char *ret = dict_is_word_nocase(&d, WORD);
+	match_word_print(ret);
 	return 0;
 }
